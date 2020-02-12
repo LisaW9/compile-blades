@@ -12,7 +12,7 @@ class CompileBlades extends Command
      *
      * @var string
      */
-     protected $signature = 'compile:blades {blade-name}';
+     protected $signature = 'compile:blades {blade-name} {--view=}';
 
     /**
      * The console command description.
@@ -31,7 +31,21 @@ class CompileBlades extends Command
         $viewName = $this->argument('blade-name');
 
         $blade = $this->compile(view($viewName)->getPath());
-        file_put_contents(view($viewName)->getPath(), $blade);
+
+        if(is_null($this->option('view'))) {
+            file_put_contents(view($viewName)->getPath(), $blade);
+        } else {
+            $view = str_replace('.', '/', $this->option('view'));
+            $newPath = base_path() . "/resources/views/$view.blade.php";
+
+            $dirname = dirname($newPath);
+            if (!is_dir($dirname))
+            {
+                mkdir($dirname, 0755, true);
+            }
+
+            file_put_contents($newPath, $blade);
+        }
 
         $this->comment(PHP_EOL . Inspiring::quote() . PHP_EOL);
     }
@@ -64,7 +78,7 @@ class CompileBlades extends Command
             // split array from include name
             $includes = $pregOutput[1];
             $arraysSent = $pregOutput[4];
-            
+
             // split array valriables
             // define variables
             $includesWithVariables = [];
