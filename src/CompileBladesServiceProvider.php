@@ -1,6 +1,6 @@
 <?php
 
-namespace Lisaw\CompileBlades;
+namespace Techo\CompileBlades;
 
 use Illuminate\Support\ServiceProvider;
 use Lisaw\CompileBlades\Console\CompileBlades;

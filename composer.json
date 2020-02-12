@@ -1,5 +1,5 @@
 {
-    "name": "lisaw/compile-blades",
+    "name": "te-cho/compile-blades",
     "description": "updated version te-cho/compile-blades to compile blades into a new file instead of overwriting the old file.",
     "authors": [
         {
@@ -26,7 +26,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Lisaw\\CompileBlades\\": "./src/"
+            "Techo\\CompileBlades\\": "./src/"
         }
     },
     "autoload-dev": {
@@ -42,7 +42,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Lisaw\\CompileBlades\\CompileBladesServiceProvider"
+                "Techo\\CompileBlades\\CompileBladesServiceProvider"
             ]
         }
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Lisaw\CompileBlades\Console;
+namespace Techo\CompileBlades\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Inspiring;
