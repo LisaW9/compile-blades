@@ -3,11 +3,11 @@
 namespace Techo\CompileBlades;
 
 use Illuminate\Support\ServiceProvider;
-use Lisaw\CompileBlades\Console\CompileBlades;
+use Techo\CompileBlades\Console\CompileBlades;
 
 /**
  * Class CompileBladesServiceProvider
- * @package Lisaw\CompileBlades
+ * @package Techo\CompileBlades
  */
 class CompileBladesServiceProvider extends ServiceProvider
 {
