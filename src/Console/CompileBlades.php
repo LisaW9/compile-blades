@@ -1,6 +1,6 @@
 <?php
 
-namespace Techo\CompileBlades\Console;
+namespace Lisaw\CompileBlades\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Inspiring;
@@ -39,8 +39,8 @@ class CompileBlades extends Command
     private function compile($viewPath)
     {
         $blade = file_get_contents($viewPath);
-        $this->implodeLayout($blade);//A1 @inprogress
-        $this->implodeIncludes($blade);//A2 @pending
+        $this->implodeLayout($blade); //A1 @inprogress
+        $this->implodeIncludes($blade); //A2 @pending
 
         return $blade;
     }
@@ -64,6 +64,7 @@ class CompileBlades extends Command
             // split array from include name
             $includes = $pregOutput[1];
             $arraysSent = $pregOutput[4];
+            
             // split array valriables
             // define variables
             $includesWithVariables = [];
@@ -72,6 +73,7 @@ class CompileBlades extends Command
                 $arrayOfVariablesExtraction = '<?php extract(' . $arrayOfVariables . '); ?>';
                 $includesWithVariables[$include] = $arrayOfVariablesExtraction;
             }
+
             // Include files and append variables
             foreach ($includesWithVariables as $subViewName => $arrayOfVariables) {
                 $subView = $arrayOfVariables . "\r\n" . file_get_contents(view($subViewName)->getPath());
@@ -97,8 +99,8 @@ class CompileBlades extends Command
      */
     private function seperateSections(&$blade)
     {
-        preg_match_all("/@section.{2}(.*?)'.{1}(?s)(.*?)@stop/si", $blade, $pregOutput);
-        $blade = preg_replace("/@section(?s).*?stop/si", "{{-- section was here --}}", $blade);
+        preg_match_all("/@section[(]'(.*?)'[)](.*?)@endsection/si", $blade, $pregOutput);
+        $blade = preg_replace("/@section[(]'(.*?)'[)](.*?)@endsection/si", "{{-- section $1 was here --}}", $blade);
         $sections = [];
         foreach ($pregOutput[2] as $index => $section) {
             $sections[$pregOutput[1][$index]] = $section;
@@ -115,7 +117,7 @@ class CompileBlades extends Command
         if (!empty($output[1])) {
             $layout = $output[1][0];
             //take out the extend keyword
-            $blade = preg_replace('/@extends[(][\'](.*?)[\'][)]/si', "{{-- Extend layout was here --}}", $blade);
+            $blade = preg_replace('/@extends[(][\'](.*?)[\'][)]/si', "{{-- Extend $1 was here --}}", $blade);
             //bring the layout
             $layout = file_get_contents(view($layout)->getPath());
             $blade = $blade . " " . $layout;

@@ -1,13 +1,13 @@
 <?php
 
-namespace Techo\CompileBlades;
+namespace Lisaw\CompileBlades;
 
 use Illuminate\Support\ServiceProvider;
-use Techo\CompileBlades\Console\CompileBlades;
+use Lisaw\CompileBlades\Console\CompileBlades;
 
 /**
  * Class CompileBladesServiceProvider
- * @package Techo\CompileBlades
+ * @package Lisaw\CompileBlades
  */
 class CompileBladesServiceProvider extends ServiceProvider
 {
