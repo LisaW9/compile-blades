@@ -33,10 +33,13 @@ class CompileBlades extends Command
         $blade = $this->compile(view($viewName)->getPath());
 
         if(is_null($this->option('view'))) {
+
             file_put_contents(view($viewName)->getPath(), $blade);
+
         } else {
+
             $view = str_replace('.', '/', $this->option('view'));
-            $newPath = base_path() . "/resources/views/$view.blade.php";
+            $newPath = resource_path('views') . "/$view.blade.php";
 
             $dirname = dirname($newPath);
             if (!is_dir($dirname))
@@ -74,7 +77,11 @@ class CompileBlades extends Command
 
         // get includes names
         preg_match_all("/@include.*?['|\"](.*?)['|\"]((,)(.*?))?[)]$/im", $blade, $pregOutput);
+        
+        $this->ignoreComposerViews($pregOutput);
+
         while (!empty($pregOutput[0])) {
+
             // split array from include name
             $includes = $pregOutput[1];
             $arraysSent = $pregOutput[4];
@@ -94,7 +101,9 @@ class CompileBlades extends Command
                 $blade =
                     preg_replace("/@include.*?['|\"]" . $subViewName . "['|\"]((,)(.*?))?[)]$/im", $subView, $blade);
             }
+
             preg_match_all("/@include.*?['|\"](.*?)['|\"]((,)(.*?))?[)]$/sim", $blade, $pregOutput);
+            $this->ignoreComposerViews($pregOutput);
             if (++$i > 2) {
                 break;
             }
@@ -158,6 +167,25 @@ class CompileBlades extends Command
                 );
             }
         }
+    }
 
+    private function ignoreComposerViews(&$pregOutput)
+    {
+        if(config('compileblades.view_composers.exclude_sections') && config('compileblades.view_composers.composerserviceprovider_location')) {
+
+            $provider = file_get_contents(config('compileblades.view_composers.composerserviceprovider_location'));
+            preg_match_all('/(View::composer|view[(][)]->composer)[(][\'](.*?)[\'],(.*?)[)]/si', $provider, $output);
+
+            foreach($output[2] as $exclude) {
+                $key = array_search($exclude, $pregOutput[1], true);
+                if($key !== false) {
+                    unset($pregOutput[0][$key]);
+                    unset($pregOutput[1][$key]);
+                    unset($pregOutput[2][$key]);
+                    unset($pregOutput[3][$key]);
+                    unset($pregOutput[4][$key]);
+                }
+            }
+        }
     }
 }

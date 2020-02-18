@@ -25,5 +25,9 @@ class CompileBladesServiceProvider extends ServiceProvider
                 ]
             );
         }
+
+        $this->publishes([
+            __DIR__.'/config/compileblades.php' => config_path('compileblades.php'),
+        ]);
     }
 }
