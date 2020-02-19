@@ -104,7 +104,7 @@ class CompileBlades extends Command
 
             preg_match_all("/@include[(]['|\"](.*?)['|\"]((,)(.*?))?[)]$/im", $blade, $pregOutput);
             $this->ignoreComposerViews($pregOutput);
-            if (++$i > 2) {
+            if (++$i > config('compileblades.nesting')) {
                 break;
             }
         }

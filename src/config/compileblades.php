@@ -1,6 +1,18 @@
 <?php
 
 return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Nesting
+    |--------------------------------------------------------------------------
+    |
+    | Define how many layers of views you want to compile
+    |
+    */
+
+    'nesting' => 2,
+
     /*
     |--------------------------------------------------------------------------
     | View Composers
@@ -27,6 +39,7 @@ return [
     | Set the value to NULL if you want to overwrite the view.
     |
     */
+   
     'auto_compilers' => [
         // e.g. view => compiled/view,
     ],
