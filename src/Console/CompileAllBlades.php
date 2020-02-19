@@ -4,7 +4,7 @@ namespace Techo\CompileBlades\Console;
 
 use Illuminate\Console\Command;
 
-class compileAllBlades extends Command
+class CompileAllBlades extends Command
 {
     /**
      * The name and signature of the console command.
