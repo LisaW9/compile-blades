@@ -76,7 +76,7 @@ class CompileBlades extends Command
         $i = 0;
 
         // get includes names
-        preg_match_all("/@include.*?['|\"](.*?)['|\"]((,)(.*?))?[)]$/im", $blade, $pregOutput);
+        preg_match_all("/@include[(]['|\"](.*?)['|\"]((,)(.*?))?[)]$/im", $blade, $pregOutput);
         
         $this->ignoreComposerViews($pregOutput);
 
@@ -99,10 +99,10 @@ class CompileBlades extends Command
             foreach ($includesWithVariables as $subViewName => $arrayOfVariables) {
                 $subView = $arrayOfVariables . "\r\n" . file_get_contents(view($subViewName)->getPath());
                 $blade =
-                    preg_replace("/@include.*?['|\"]" . $subViewName . "['|\"]((,)(.*?))?[)]$/im", $subView, $blade);
+                    preg_replace("/@include[(]['|\"]" . $subViewName . "['|\"]((,)(.*?))?[)]$/im", $subView, $blade);
             }
 
-            preg_match_all("/@include.*?['|\"](.*?)['|\"]((,)(.*?))?[)]$/sim", $blade, $pregOutput);
+            preg_match_all("/@include[(]['|\"](.*?)['|\"]((,)(.*?))?[)]$/im", $blade, $pregOutput);
             $this->ignoreComposerViews($pregOutput);
             if (++$i > 2) {
                 break;
@@ -122,8 +122,8 @@ class CompileBlades extends Command
      */
     private function seperateSections(&$blade)
     {
-        preg_match_all("/@section[(]'(.*?)'[)](.*?)@endsection/si", $blade, $pregOutput);
-        $blade = preg_replace("/@section[(]'(.*?)'[)](.*?)@endsection/si", "{{-- section $1 was here --}}", $blade);
+        preg_match_all("/@section[(]['|\"](.*?)['|\"][)](.*?)@endsection/si", $blade, $pregOutput);
+        $blade = preg_replace("/@section[(]['|\"](.*?)['|\"][)](.*?)@endsection/si", "{{-- section $1 was here --}}", $blade);
         $sections = [];
         foreach ($pregOutput[2] as $index => $section) {
             $sections[$pregOutput[1][$index]] = $section;
@@ -135,12 +135,12 @@ class CompileBlades extends Command
     private function replaceLayout(&$blade)
     {
         //find the extended file
-        preg_match_all('/@extends[(][\'](.*?)[\'][)]/si', $blade, $output);
+        preg_match_all("/@extends[(]['|\"](.*?)['|\"][)]/si", $blade, $output);
 
         if (!empty($output[1])) {
             $layout = $output[1][0];
             //take out the extend keyword
-            $blade = preg_replace('/@extends[(][\'](.*?)[\'][)]/si', "{{-- Extend $1 was here --}}", $blade);
+            $blade = preg_replace("/@extends[(]['|\"](.*?)['|\"][)]/si", "{{-- Extend $1 was here --}}", $blade);
             //bring the layout
             $layout = file_get_contents(view($layout)->getPath());
             $blade = $blade . " " . $layout;
@@ -149,19 +149,19 @@ class CompileBlades extends Command
 
     private function replaceSections(&$blade, $sections)
     {
-        preg_match_all('/@yield[(][\'](.*?)[\'][)]/si', $blade, $output);
+        preg_match_all("/@yield[(]['|\"](.*?)['|\"][)]/si", $blade, $output);
         $sectionsName = $output[1];
         foreach ($sectionsName as $sectionName) {
             $sectionNameWithAlt = explode('\', \'', $sectionName);
             if (isset($sections[$sectionNameWithAlt[0]])) {
                 $blade = preg_replace(
-                    '/@yield[(][\']' . $sectionNameWithAlt[0] . '[\'].*?[)]$/m',
+                    "/@yield[(]['|\"]" . $sectionNameWithAlt[0] . "['|\"].*?[)]$/m",
                     $sections[$sectionNameWithAlt[0]],
                     $blade
                 );
             } else {
                 $blade = preg_replace(
-                    '/@yield[(][\']' . $sectionNameWithAlt[0] . '[\'].*?[)]$/m',
+                    "/@yield[(]['|\"]" . $sectionNameWithAlt[0] . "['|\"].*?[)]$/m",
                     $sectionNameWithAlt[1] ?? '{{--yield didnt have alternative--}}',
                     $blade
                 );
@@ -174,7 +174,7 @@ class CompileBlades extends Command
         if(config('compileblades.view_composers.exclude_sections') && config('compileblades.view_composers.composerserviceprovider_location')) {
 
             $provider = file_get_contents(config('compileblades.view_composers.composerserviceprovider_location'));
-            preg_match_all('/(View::composer|view[(][)]->composer)[(][\'](.*?)[\'],(.*?)[)]/si', $provider, $output);
+            preg_match_all("/(View::composer|view[(][)]->composer)[(]['|\"](.*?)['|\"],(.*?)[)]/si", $provider, $output);
 
             foreach($output[2] as $exclude) {
                 $key = array_search($exclude, $pregOutput[1], true);
