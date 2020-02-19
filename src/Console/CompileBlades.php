@@ -149,20 +149,22 @@ class CompileBlades extends Command
 
     private function replaceSections(&$blade, $sections)
     {
-        preg_match_all("/@yield[(]['|\"](.*?)['|\"][)]/si", $blade, $output);
+        preg_match_all("/@yield[(]['\"]([^,'\"]*?)['\"][,]?(.*?)?[)]/si", $blade, $output);
         $sectionsName = $output[1];
-        foreach ($sectionsName as $sectionName) {
-            $sectionNameWithAlt = explode('\', \'', $sectionName);
-            if (isset($sections[$sectionNameWithAlt[0]])) {
+        $alternatives = $output[2];
+        foreach ($sectionsName as $key => $sectionName) {
+            $alternative = isset($alternatives[$key]) ? $alternatives[$key] : '{{--yield didnt have alternative--}}';
+            
+            if (isset($sections[$sectionName])) {
                 $blade = preg_replace(
-                    "/@yield[(]['|\"]" . $sectionNameWithAlt[0] . "['|\"].*?[)]/m",
-                    $sections[$sectionNameWithAlt[0]],
+                    "/@yield[(]['|\"]" . $sectionName . "['|\"].*?[)]/m",
+                    $sections[$sectionName],
                     $blade
                 );
             } else {
                 $blade = preg_replace(
-                    "/@yield[(]['|\"]" . $sectionNameWithAlt[0] . "['|\"].*?[)]/m",
-                    $sectionNameWithAlt[1] ?? '{{--yield didnt have alternative--}}',
+                    "/@yield[(]['|\"]" . $sectionName . "['|\"].*?[)]/m",
+                    $alternative,
                     $blade
                 );
             }
