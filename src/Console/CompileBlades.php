@@ -155,13 +155,13 @@ class CompileBlades extends Command
             $sectionNameWithAlt = explode('\', \'', $sectionName);
             if (isset($sections[$sectionNameWithAlt[0]])) {
                 $blade = preg_replace(
-                    "/@yield[(]['|\"]" . $sectionNameWithAlt[0] . "['|\"].*?[)]$/m",
+                    "/@yield[(]['|\"]" . $sectionNameWithAlt[0] . "['|\"].*?[)]/m",
                     $sections[$sectionNameWithAlt[0]],
                     $blade
                 );
             } else {
                 $blade = preg_replace(
-                    "/@yield[(]['|\"]" . $sectionNameWithAlt[0] . "['|\"].*?[)]$/m",
+                    "/@yield[(]['|\"]" . $sectionNameWithAlt[0] . "['|\"].*?[)]/m",
                     $sectionNameWithAlt[1] ?? '{{--yield didnt have alternative--}}',
                     $blade
                 );
