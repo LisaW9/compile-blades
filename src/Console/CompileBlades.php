@@ -76,7 +76,7 @@ class CompileBlades extends Command
         $i = 0;
 
         // get includes names
-        preg_match_all("/@include[(]['|\"](.*?)['|\"]((,)(.*?))?[)]$/im", $blade, $pregOutput);
+        preg_match_all("/@include[(]['|\"](.*?)['|\"]((,)(.*?))?[)]$/sim", $blade, $pregOutput);
         
         $this->ignoreComposerViews($pregOutput);
 
@@ -99,10 +99,10 @@ class CompileBlades extends Command
             foreach ($includesWithVariables as $subViewName => $arrayOfVariables) {
                 $subView = $arrayOfVariables . "\r\n" . file_get_contents(view($subViewName)->getPath());
                 $blade =
-                    preg_replace("/@include[(]['|\"]" . $subViewName . "['|\"]((,)(.*?))?[)]$/im", $subView, $blade);
+                    preg_replace("/@include[(]['|\"]" . $subViewName . "['|\"]((,)(.*?))?[)]$/sim", $subView, $blade);
             }
 
-            preg_match_all("/@include[(]['|\"](.*?)['|\"]((,)(.*?))?[)]$/im", $blade, $pregOutput);
+            preg_match_all("/@include[(]['|\"](.*?)['|\"]((,)(.*?))?[)]$/sim", $blade, $pregOutput);
             $this->ignoreComposerViews($pregOutput);
             if (++$i > config('compileblades.nesting')) {
                 break;
