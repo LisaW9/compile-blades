@@ -3,6 +3,7 @@
 namespace Techo\CompileBlades;
 
 use Illuminate\Support\ServiceProvider;
+use Techo\CompileBlades\Console\CompileAllBlades;
 use Techo\CompileBlades\Console\CompileBlades;
 
 /**
