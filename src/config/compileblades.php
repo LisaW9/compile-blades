@@ -17,4 +17,17 @@ return [
         'composerserviceprovider_location' => '', // e.g. app_path('Providers/ComposerServiceProvider.php'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Auto compilers
+    |--------------------------------------------------------------------------
+    |
+    | Here you can define views that should be compiled when running the "compile:all" command.
+    | The key is the name of the view that needs to be compiled, the value is the location of where the view needs to be compiled to.
+    | Set the value to NULL if you want to overwrite the view.
+    |
+    */
+    'auto_compilers' => [
+        // e.g. view => compiled/view,
+    ],
 ];

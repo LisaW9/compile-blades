@@ -12,7 +12,7 @@ class CompileBlades extends Command
      *
      * @var string
      */
-     protected $signature = 'compile:blades {blade-name} {--view=}';
+     protected $signature = 'compile:blades {blade-name} {--location=}';
 
     /**
      * The console command description.
@@ -32,14 +32,14 @@ class CompileBlades extends Command
 
         $blade = $this->compile(view($viewName)->getPath());
 
-        if(is_null($this->option('view'))) {
+        if(is_null($this->option('location'))) {
 
             file_put_contents(view($viewName)->getPath(), $blade);
 
         } else {
 
-            $view = str_replace('.', '/', $this->option('view'));
-            $newPath = resource_path('views') . "/$view.blade.php";
+            $location = str_replace('.', '/', $this->option('location'));
+            $newPath = resource_path('views') . "/$location.blade.php";
 
             $dirname = dirname($newPath);
             if (!is_dir($dirname))

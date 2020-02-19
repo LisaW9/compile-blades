@@ -22,6 +22,7 @@ class CompileBladesServiceProvider extends ServiceProvider
             $this->commands(
                 [
                     CompileBlades::class,
+                    CompileAllBlades::class,
                 ]
             );
         }
