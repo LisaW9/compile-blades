@@ -43,4 +43,19 @@ return [
     'auto_compilers' => [
         // e.g. view => compiled/view,
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Excluded views
+    |--------------------------------------------------------------------------
+    |
+    | Here you can define views that should never be compiled.
+    | WARNING! Views that are defined here will not be compiled even if they are defined in the "auto_compilers" array !
+    |
+    */
+   
+    'excluded_views' => [
+        
+    ]
+
 ];

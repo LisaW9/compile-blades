@@ -30,24 +30,26 @@ class CompileBlades extends Command
     {
         $viewName = $this->argument('blade-name');
 
-        $blade = $this->compile(view($viewName)->getPath());
+        if(!in_array($viewName, config('compileblades.excluded_views'))) {
+            $blade = $this->compile(view($viewName)->getPath());
 
-        if(is_null($this->option('location'))) {
+            if(is_null($this->option('location'))) {
 
-            file_put_contents(view($viewName)->getPath(), $blade);
+                file_put_contents(view($viewName)->getPath(), $blade);
 
-        } else {
+            } else {
 
-            $location = str_replace('.', '/', $this->option('location'));
-            $newPath = resource_path('views') . "/$location.blade.php";
+                $location = str_replace('.', '/', $this->option('location'));
+                $newPath = resource_path('views') . "/$location.blade.php";
 
-            $dirname = dirname($newPath);
-            if (!is_dir($dirname))
-            {
-                mkdir($dirname, 0755, true);
+                $dirname = dirname($newPath);
+                if (!is_dir($dirname))
+                {
+                    mkdir($dirname, 0755, true);
+                }
+
+                file_put_contents($newPath, $blade);
             }
-
-            file_put_contents($newPath, $blade);
         }
 
         $this->comment(PHP_EOL . Inspiring::quote() . PHP_EOL);
@@ -78,6 +80,7 @@ class CompileBlades extends Command
         // get includes names
         preg_match_all("/@include[(]['|\"](.*?)['|\"]((,)(.*?))?[)]$/sim", $blade, $pregOutput);
         
+        $this->ignoreExcludedViews($pregOutput);
         $this->ignoreComposerViews($pregOutput);
 
         while (!empty($pregOutput[0])) {
@@ -103,6 +106,7 @@ class CompileBlades extends Command
             }
 
             preg_match_all("/@include[(]['|\"](.*?)['|\"]((,)(.*?))?[)]$/sim", $blade, $pregOutput);
+            $this->ignoreExcludedViews($pregOutput);
             $this->ignoreComposerViews($pregOutput);
             if (++$i > config('compileblades.nesting')) {
                 break;
@@ -167,6 +171,21 @@ class CompileBlades extends Command
                     $alternative,
                     $blade
                 );
+            }
+        }
+    }
+
+    private function ignoreExcludedViews(&$pregOutput)
+    {
+        $excludedViews = config('compileblades.excluded_views');
+        foreach($excludedViews as $exclude) {
+            $key = array_search($exclude, $pregOutput[1], true);
+            if($key !== false) {
+                unset($pregOutput[0][$key]);
+                unset($pregOutput[1][$key]);
+                unset($pregOutput[2][$key]);
+                unset($pregOutput[3][$key]);
+                unset($pregOutput[4][$key]);
             }
         }
     }

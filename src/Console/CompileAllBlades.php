@@ -43,9 +43,11 @@ class CompileAllBlades extends Command
         $bar->start();
 
         foreach($autoCompilers as $blade => $location) {
-            $this->callSilent('compile:blades', [
-                'blade-name' => $blade, '--location' => $location
-            ]);
+            if(!in_array($blade, config('compileblades.excluded_views'))) {
+                $this->callSilent('compile:blades', [
+                    'blade-name' => $blade, '--location' => $location
+                ]);
+            }
 
             $bar->advance();
         }
